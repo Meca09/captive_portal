@@ -55,21 +55,36 @@ def access_point():
     
 def handle_request(client_sock):
     request = client_sock.recv(4096)
-    if request:
-        # Envía el encabezado de respuesta HTTP
-        response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n"
-        client_sock.send(response)
-        
-        # Envía el formulario HTML
-        client_sock.send(form_html)
+    if request.startswith('GET /'):
+        response = 'HTTP/1.0 200 OK\r\Contenttype: text/html\r\n\r\n' + form_html
+    # elif request.startswith('POST /'):
+    #     content_length_start = request.find('Content-Length:')
+    #     content_length_end = request.find('\r\n', content_length_start)
+    #     content_length = int(request[content_length_start + len('Content-Length'):content_length_end].strip())
+    #     data_start = request.find('\r\n\r\n') + 4
+    #     data = request[data_start:data_start + content_length]
 
+    #     nombre_start = data.find('nombre=')
+    #     nombre_end = data.find('&', nombre_start)
+    #     nombre = data[nombre_start + len('nombre='):nombre_end]
+
+    #     print('Nombre:', nombre)
+    #     print('Telefono:', telefono)
+
+    #     response = 'HTTP/1.0 200 OK\r\Contenttype: text/plain\r\n\r\nDatos recibidos'
+
+    #     # Envía el encabezado de respuesta HTTP
+                
+    #     # Envía el formulario HTML
+    #     client_sock.send(form_html)
+
+    client_sock.send(response.encode('utf-8'))
     client_sock.close()
 
-access_point()
 captive_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-captive_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-captive_server.bind(('', CAPTIVE_PORT))
-captive_server.listen(1)
+# captive_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+# captive_server.bind(('', CAPTIVE_PORT))
+# captive_server.listen(1)
 
 
     
